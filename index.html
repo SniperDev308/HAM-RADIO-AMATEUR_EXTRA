@@ -255,10 +255,11 @@ select:focus{outline:none;border-color:var(--accent)}
     <button class="back-btn" onclick="goHome()">&#8592; Inicio</button>
     <div><div class="screen-title">Flashcards</div><div class="screen-sub" id="fc-sub-label"></div></div>
   </div>
-  <div style="margin-bottom:.75rem"><select id="fc-filter" onchange="fcFilter()"></select></div>
+  <div style="margin-bottom:.6rem"><select id="fc-filter" onchange="fcFilterChange()"></select></div>
+  <div id="fc-sub-row" style="display:none;margin-bottom:.6rem"><select id="fc-sub" onchange="fcSubChange()"></select></div>
   <div style="margin-bottom:.75rem">
     <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text3);cursor:pointer">
-      <input type="checkbox" id="fc-mix" onchange="fcFilter()"> Mezclar orden
+      <input type="checkbox" id="fc-mix" onchange="fcApplyFilter()"> Mezclar orden
     </label>
   </div>
   <div class="pbar-wrap"><div class="pbar-fill" id="fc-pbar" style="width:0%"></div></div>
@@ -278,16 +279,43 @@ select:focus{outline:none;border-color:var(--accent)}
   </div>
   <div class="quiz-setup">
     <h3>Examen simulado FCC Amateur Extra</h3>
-    <div class="field">
-      <label>Subelemento</label>
-      <select id="qs-filter" onchange="qsFilterChange()"></select>
+    <!-- Mode tabs -->
+    <div style="display:flex;gap:8px;margin-bottom:1rem">
+      <button id="tab-oficial" onclick="setQuizTab('oficial')"
+        style="flex:1;padding:9px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:2px solid var(--accent);background:var(--accent-bg);color:var(--accent)">
+        &#9733; Examen Oficial<br><span style="font-size:10px;font-weight:400;opacity:.8">50 preguntas · distribucion FCC</span>
+      </button>
+      <button id="tab-practica" onclick="setQuizTab('practica')"
+        style="flex:1;padding:9px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:2px solid var(--border2);background:var(--card);color:var(--text3)">
+        &#128196; Practica por seccion<br><span style="font-size:10px;font-weight:400;opacity:.8">elige seccion y cantidad</span>
+      </button>
     </div>
-    <div class="field">
-      <label>Numero de preguntas</label>
-      <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
-        <input type="number" id="qs-n" min="1" max="552" value="50"
-          style="width:90px;padding:9px 12px;background:var(--card2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:18px;font-weight:600;text-align:center;outline:none">
-        <span style="font-size:13px;color:var(--text3)" id="qs-n-max">Maximo 552</span>
+    <!-- Oficial mode info -->
+    <div id="qs-oficial-info" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:.85rem 1rem;font-size:13px;color:var(--text2)">
+      <div style="font-weight:600;color:var(--text);margin-bottom:.4rem">&#128221; Examen oficial FCC</div>
+      <div style="font-size:12px;color:var(--text3);line-height:1.7">
+        50 preguntas seleccionadas aleatoriamente siguiendo la distribucion oficial:<br>
+        E1&#215;6 · E2&#215;5 · E3&#215;3 · E4&#215;5 · E5&#215;4 · E6&#215;6 · E7&#215;8 · E8&#215;4 · E9&#215;8 · E0&#215;1
+      </div>
+    </div>
+    <!-- Practica mode options -->
+    <div id="qs-practica-opts" style="display:none">
+      <div class="field">
+        <label>Subelemento</label>
+        <select id="qs-filter" onchange="qsFilterChange()"></select>
+      </div>
+      <div class="field" id="qs-sub-field" style="display:none">
+        <label>Subseccion</label>
+        <select id="qs-sub" onchange="qsSubChange()"></select>
+      </div>
+      <div class="field">
+        <label>Numero de preguntas</label>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+          <input type="number" id="qs-n" min="1" max="552" value="50"
+            style="width:90px;padding:9px 12px;background:var(--card2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:18px;font-weight:600;text-align:center;outline:none"
+            oninput="qsClampN(this)">
+          <span style="font-size:13px;color:var(--text3)" id="qs-n-max"></span>
+        </div>
       </div>
     </div>
   </div>
@@ -383,13 +411,12 @@ function goHome() { saveStats(); updateHomeProg(); show("s-home"); }
 function goRepasar() { show("s-repasar"); buildSectionBrowser(); }
 function goFlash() {
   fcFlipped = false;
-  var v = document.getElementById("fc-filter").value || "ALL";
-  var doMix = document.getElementById("fc-mix").checked;
-  var pool = v === "ALL" ? RAW.slice() : RAW.filter(function(q) { return q.sub.startsWith(v); });
-  fcPool = doMix ? shuffle(pool) : pool;
-  fcIdx = 0;
   show("s-flash");
   buildFcFilter();
+  var subRow = document.getElementById("fc-sub-row");
+  if (subRow) subRow.style.display = "none";
+  fcPool = RAW.slice();
+  fcIdx = 0;
   renderFC();
 }
 function goQuizSetup() { show("s-quiz-setup"); buildQsFilter(); }
@@ -601,13 +628,44 @@ function buildFcFilter() {
   sel.innerHTML = opts;
 }
 
-function fcFilter() {
+function fcFilterChange() {
+  var v = document.getElementById("fc-filter").value || "ALL";
+  var subRow = document.getElementById("fc-sub-row");
+  if (v === "ALL") {
+    subRow.style.display = "none";
+  } else {
+    subRow.style.display = "block";
+    var subs = GRP_SUBS[v] || [];
+    var subSel = document.getElementById("fc-sub");
+    var opts = '<option value="ALL">' + v + " completo (" + POOL_GRP[v] + " preg.)</option>";
+    subs.forEach(function(s) {
+      var cnt = RAW.filter(function(q) { return q.sub === s; }).length;
+      opts += '<option value="' + s + '">' + s + " - " + (TSUBS[s] || s) + " (" + cnt + ")</option>";
+    });
+    subSel.innerHTML = opts;
+  }
+  fcApplyFilter();
+}
+
+function fcSubChange() { fcApplyFilter(); }
+
+function fcApplyFilter() {
   fcFlipped = false;
   var v = document.getElementById("fc-filter").value || "ALL";
+  var subEl = document.getElementById("fc-sub");
+  var sub = (subEl && v !== "ALL") ? subEl.value : "ALL";
   var doMix = document.getElementById("fc-mix").checked;
-  var pool = v === "ALL" ? RAW.slice() : RAW.filter(function(q) { return q.sub.startsWith(v); });
+  var pool;
+  if (v === "ALL") {
+    pool = RAW.slice();
+  } else if (sub === "ALL") {
+    pool = RAW.filter(function(q) { return q.sub.startsWith(v); });
+  } else {
+    pool = RAW.filter(function(q) { return q.sub === sub; });
+  }
   fcPool = doMix ? shuffle(pool) : pool;
-  fcIdx = 0; renderFC();
+  fcIdx = 0;
+  renderFC();
 }
 
 function renderFC() {
@@ -640,12 +698,31 @@ function fcFlip() {
 function fcPrev() { if (fcIdx > 0) { fcIdx--; fcFlipped = false; renderFC(); } }
 function fcNext() { if (fcIdx < fcPool.length - 1) { fcIdx++; fcFlipped = false; renderFC(); } }
 
+var quizTab = "oficial"; // "oficial" or "practica"
+
+function setQuizTab(tab) {
+  quizTab = tab;
+  var btnO = document.getElementById("tab-oficial");
+  var btnP = document.getElementById("tab-practica");
+  var infoO = document.getElementById("qs-oficial-info");
+  var optsP = document.getElementById("qs-practica-opts");
+  if (tab === "oficial") {
+    btnO.style.borderColor = "var(--accent)"; btnO.style.background = "var(--accent-bg)"; btnO.style.color = "var(--accent)";
+    btnP.style.borderColor = "var(--border2)"; btnP.style.background = "var(--card)"; btnP.style.color = "var(--text3)";
+    infoO.style.display = "block"; optsP.style.display = "none";
+  } else {
+    btnP.style.borderColor = "var(--accent)"; btnP.style.background = "var(--accent-bg)"; btnP.style.color = "var(--accent)";
+    btnO.style.borderColor = "var(--border2)"; btnO.style.background = "var(--card)"; btnO.style.color = "var(--text3)";
+    infoO.style.display = "none"; optsP.style.display = "block";
+  }
+}
+
 function buildQsFilter() {
   var sel = document.getElementById("qs-filter");
   if (!sel) return;
-  var opts = '<option value="ALL">Todo el pool</option>';
+  var opts = '<option value="ALL">Todo el pool (552 preguntas)</option>';
   Object.keys(SUBS).forEach(function(grp) {
-    opts += '<option value="' + grp + '">' + grp + " - " + SUBS[grp] + "</option>";
+    opts += '<option value="' + grp + '">' + grp + " - " + SUBS[grp] + " (" + POOL_GRP[grp] + " preg.)</option>";
   });
   sel.innerHTML = opts;
   qsFilterChange();
@@ -653,22 +730,84 @@ function buildQsFilter() {
 
 function qsFilterChange() {
   var v = document.getElementById("qs-filter").value || "ALL";
-  var max = v === "ALL" ? 552 : (POOL_GRP[v] || 552);
-  var def = v === "ALL" ? 50 : Math.min(EXAM_GRP[v] || 10, max);
+  var subField = document.getElementById("qs-sub-field");
   var nEl = document.getElementById("qs-n");
   var mEl = document.getElementById("qs-n-max");
-  nEl.value = def; nEl.max = max;
+
+  if (v === "ALL") {
+    subField.style.display = "none";
+    var max = 552;
+    nEl.max = max; nEl.value = 50;
+    if (mEl) mEl.textContent = "Maximo " + max;
+  } else {
+    // Show subsection selector
+    subField.style.display = "block";
+    var subs = GRP_SUBS[v] || [];
+    var subSel = document.getElementById("qs-sub");
+    var subOpts = '<option value="ALL">' + v + ' completo (' + POOL_GRP[v] + ' preg.)</option>';
+    subs.forEach(function(s) {
+      var cnt = RAW.filter(function(q) { return q.sub === s; }).length;
+      subOpts += '<option value="' + s + '">' + s + " - " + (TSUBS[s] || s) + " (" + cnt + " preg.)</option>";
+    });
+    subSel.innerHTML = subOpts;
+    qsSubChange();
+  }
+}
+
+function qsSubChange() {
+  var grp = document.getElementById("qs-filter").value;
+  var sub = document.getElementById("qs-sub").value;
+  var nEl = document.getElementById("qs-n");
+  var mEl = document.getElementById("qs-n-max");
+  var max;
+  if (sub === "ALL") {
+    max = POOL_GRP[grp] || 50;
+  } else {
+    max = RAW.filter(function(q) { return q.sub === sub; }).length;
+  }
+  nEl.max = max; nEl.value = max;
   if (mEl) mEl.textContent = "Maximo " + max;
 }
 
+function qsClampN(el) {
+  var max = parseInt(el.max) || 552;
+  if (parseInt(el.value) > max) el.value = max;
+  if (parseInt(el.value) < 1) el.value = 1;
+}
+
 function startQuiz() {
-  var v = document.getElementById("qs-filter").value || "ALL";
-  var n = parseInt(document.getElementById("qs-n").value) || 50;
-  var pool = v === "ALL" ? RAW.slice() : RAW.filter(function(q) { return q.sub.startsWith(v); });
-  quizQs = shuffle(pool).slice(0, n);
+  var pool, n;
+
+  if (quizTab === "oficial") {
+    // Official exam: pick questions per FCC distribution
+    pool = [];
+    Object.keys(EXAM_GRP).forEach(function(grp) {
+      var grpPool = RAW.filter(function(q) { return q.sub.startsWith(grp); });
+      var picked = shuffle(grpPool).slice(0, EXAM_GRP[grp]);
+      pool = pool.concat(picked);
+    });
+    pool = shuffle(pool);
+    n = pool.length; // should be 50
+  } else {
+    var v = document.getElementById("qs-filter").value || "ALL";
+    var sub = document.getElementById("qs-sub") ? document.getElementById("qs-sub").value : "ALL";
+    n = parseInt(document.getElementById("qs-n").value) || 50;
+    var srcPool;
+    if (v === "ALL") {
+      srcPool = RAW.slice();
+    } else if (sub === "ALL") {
+      srcPool = RAW.filter(function(q) { return q.sub.startsWith(v); });
+    } else {
+      srcPool = RAW.filter(function(q) { return q.sub === sub; });
+    }
+    pool = shuffle(srcPool).slice(0, n);
+  }
+
+  quizQs = pool;
   quizIdx = 0; quizResults = [];
   quizAnswers = quizQs.map(function() { return -1; });
-  document.getElementById("quiz-sub-label").textContent = quizQs.length + " preguntas";
+  var label = quizTab === "oficial" ? "Examen Oficial · 50 preguntas" : quizQs.length + " preguntas";
+  document.getElementById("quiz-sub-label").textContent = label;
   show("s-quiz");
   renderQuiz();
 }
