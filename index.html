@@ -654,7 +654,13 @@ function speakRepCurrent() {
   var q = repPool[repIdx];
   if (!q) return;
   var btn = document.getElementById("btn-speak-rep");
-  if (btn) btn.disabled = true;
+  if (btn) {
+    btn.disabled = true;
+    btn.style.background = "#0d2218";
+    btn.style.borderColor = "#1a4a28";
+    btn.style.color = "#4ade80";
+    btn.innerHTML = "&#128266; Reproduciendo...";
+  }
   var text = q.q + ". La respuesta correcta es: " + q.a[q.ans];
   fetch(WORKER_URL + "/tts", {
     method: "POST", headers: {"Content-Type":"application/json"},
@@ -665,9 +671,26 @@ function speakRepCurrent() {
       var url = URL.createObjectURL(blob);
       var audio = new Audio(url);
       audio.play();
-      audio.onended = function() { URL.revokeObjectURL(url); if (btn) btn.disabled = false; };
+      audio.onended = function() {
+        URL.revokeObjectURL(url);
+        if (btn) {
+          btn.disabled = false;
+          btn.style.background = "#185FA5";
+          btn.style.borderColor = "#185FA5";
+          btn.style.color = "#fff";
+          btn.innerHTML = "&#128266; Escuchar";
+        }
+      };
     })
-    .catch(function() { if (btn) btn.disabled = false; });
+    .catch(function() {
+      if (btn) {
+        btn.disabled = false;
+        btn.style.background = "#185FA5";
+        btn.style.borderColor = "#185FA5";
+        btn.style.color = "#fff";
+        btn.innerHTML = "&#128266; Escuchar";
+      }
+    });
 }
 
 function toggleAutoRep() {
