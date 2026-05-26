@@ -622,8 +622,12 @@ function renderRep() {
   var aiTxt = document.getElementById("rep-ai-txt");
   if (aiBox) { aiBox.style.display = "none"; }
   if (aiTxt) { aiTxt.textContent = ""; }
-  // Restart auto timer if active
-  if (autoRepActive) scheduleAutoNext();
+  // If auto is active, read the question then schedule next
+  if (autoRepActive) {
+    speakQuestion(q, function() {
+      scheduleAutoNext();
+    });
+  }
 }
 
 function explainRepCurrent() {
@@ -668,7 +672,17 @@ function explainRepCurrent() {
     });
 }
 
-function speakText(text) {
+function speakQuestion(q, onDone) {
+  // Build the full text: question + all options + correct answer
+  var text = q.q + ". ";
+  q.a.forEach(function(ans, i) {
+    text += String.fromCharCode(65 + i) + ": " + ans + ". ";
+  });
+  text += "La respuesta correcta es " + String.fromCharCode(65 + q.ans) + ": " + q.a[q.ans] + ".";
+  speakText(text, onDone);
+}
+
+function speakText(text, onDone) {
   var btn = document.getElementById("btn-speak-rep");
   if (btn) {
     btn.disabled = true;
@@ -689,9 +703,13 @@ function speakText(text) {
       audio.onended = function() {
         URL.revokeObjectURL(url);
         resetSpeakBtn();
+        if (onDone) onDone();
       };
     })
-    .catch(function() { resetSpeakBtn(); });
+    .catch(function() {
+      resetSpeakBtn();
+      if (onDone) onDone();
+    });
 }
 
 function resetSpeakBtn() {
@@ -738,7 +756,7 @@ function scheduleAutoNext() {
   autoRepTimer = setTimeout(function() {
     if (autoRepActive) {
       if (repIdx < repPool.length - 1) { repIdx++; renderRep(); }
-      else { autoRepActive = false; toggleAutoRep(); } // stop at end
+      else { autoRepActive = false; toggleAutoRep(); }
     }
   }, autoRepDelay);
 }
