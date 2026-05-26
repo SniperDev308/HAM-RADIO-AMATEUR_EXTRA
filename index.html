@@ -729,8 +729,8 @@ function toggleAutoRep() {
     btn.innerHTML = autoRepActive ? "&#9646;&#9646; Auto" : "&#9654; Auto";
   }
   if (autoRepActive) {
-    var q = repPool[repIdx];
-    if (q) speakQuestion(q, function() { scheduleAutoNext(); });
+    // renderRep already handles speaking when autoRepActive is true
+    renderRep();
   } else {
     clearAutoRep();
   }
