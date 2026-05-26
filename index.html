@@ -259,15 +259,6 @@ select:focus{outline:none;border-color:var(--accent)}
       &#9654; Auto
     </button>
   </div>
-  <!-- Slider de velocidad - visible solo cuando Auto está activo -->
-  <div id="auto-speed-row" style="display:none;align-items:center;gap:10px;margin-bottom:.6rem;padding:.6rem .9rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px">
-    <span style="font-size:11px;color:var(--text3);white-space:nowrap">&#9889; Rapido</span>
-    <input type="range" id="auto-speed-slider" min="5" max="40" value="10" step="1"
-      oninput="updateAutoSpeed(this)"
-      style="flex:1;accent-color:var(--accent);cursor:pointer">
-    <span style="font-size:11px;color:var(--text3);white-space:nowrap">&#128034; Lento</span>
-    <span style="font-size:12px;font-weight:600;color:var(--accent);min-width:32px;text-align:right" id="auto-speed-label">10s</span>
-  </div>
   <div class="aibox" id="rep-ai-box" style="display:none;margin-bottom:.6rem">
     <div class="aihdr">&#129302; INSTRUCTOR IA</div>
     <div class="aitxt" id="rep-ai-txt"></div>
@@ -733,22 +724,16 @@ function speakRepCurrent() {
 function toggleAutoRep() {
   autoRepActive = !autoRepActive;
   var btn = document.getElementById("btn-auto-rep");
-  var speedRow = document.getElementById("auto-speed-row");
   if (btn) {
     btn.classList.toggle("active", autoRepActive);
     btn.innerHTML = autoRepActive ? "&#9646;&#9646; Auto" : "&#9654; Auto";
   }
-  if (speedRow) speedRow.style.display = autoRepActive ? "flex" : "none";
-  if (autoRepActive) scheduleAutoNext();
-  else clearAutoRep();
-}
-
-function updateAutoSpeed(slider) {
-  autoRepDelay = parseInt(slider.value) * 1000;
-  var label = document.getElementById("auto-speed-label");
-  if (label) label.textContent = slider.value + "s";
-  // Restart timer with new delay if active
-  if (autoRepActive) scheduleAutoNext();
+  if (autoRepActive) {
+    var q = repPool[repIdx];
+    if (q) speakQuestion(q, function() { scheduleAutoNext(); });
+  } else {
+    clearAutoRep();
+  }
 }
 
 function scheduleAutoNext() {
