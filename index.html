@@ -200,6 +200,13 @@ select:focus{outline:none;border-color:var(--accent)}
         <p>50 preguntas, aprueba con 74%. Navega entre preguntas y corrige al final.</p>
       </div>
     </div>
+    <div class="mode-card full" onclick="goSearch()">
+      <div class="mode-icon" style="background:var(--bg4)">&#128269;</div>
+      <div>
+        <h3>Buscar pregunta</h3>
+        <p>Busca por ID de pregunta (ej. E1A02) y estudia cualquier pregunta directamente.</p>
+      </div>
+    </div>
   </div>
   <div class="progress-section">
     <h3>&#128202; Mis estadisticas</h3>
@@ -360,6 +367,33 @@ select:focus{outline:none;border-color:var(--accent)}
   </div>
   <div class="pbar-wrap"><div class="pbar-fill" id="quiz-pbar" style="width:0%"></div></div>
   <div id="quiz-content"></div>
+</div>
+
+<!-- BUSCADOR -->
+<div id="s-search" class="screen">
+  <div class="screen-header">
+    <button class="back-btn" onclick="goHome()">&#8592; Inicio</button>
+    <div><div class="screen-title">Buscar pregunta</div><div class="screen-sub">Busca por ID (ej. E1A02, e1a02)</div></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:1rem">
+    <input id="search-input" type="text" placeholder="ID de pregunta, ej. E7F05"
+      style="flex:1;padding:10px 14px;border:1px solid var(--border2);border-radius:8px;font-size:15px;font-family:monospace;background:var(--card);color:var(--text);outline:none;text-transform:uppercase"
+      oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')doSearch()">
+    <button class="btn btn-accent" onclick="doSearch()" style="padding:10px 20px;font-size:14px">Buscar</button>
+  </div>
+  <!-- Sugerencias de formato -->
+  <div id="search-hints" style="margin-bottom:1rem">
+    <div style="font-size:11px;color:var(--text4);margin-bottom:.5rem">Ejemplos de IDs:</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <span onclick="quickSearch('E1A02')" class="pill pill-blue" style="cursor:pointer">E1A02</span>
+      <span onclick="quickSearch('E3C07')" class="pill pill-blue" style="cursor:pointer">E3C07</span>
+      <span onclick="quickSearch('E7F05')" class="pill pill-blue" style="cursor:pointer">E7F05</span>
+      <span onclick="quickSearch('E9D11')" class="pill pill-blue" style="cursor:pointer">E9D11</span>
+      <span onclick="quickSearch('E0A08')" class="pill pill-blue" style="cursor:pointer">E0A08</span>
+    </div>
+  </div>
+  <!-- Resultado -->
+  <div id="search-result"></div>
 </div>
 
 <script>
@@ -1307,6 +1341,131 @@ function showQuizResult(score) {
     '</div></div>';
   document.getElementById("quiz-content").innerHTML = html;
   document.getElementById("quiz-pbar").style.width = "100%";
+}
+
+// ── BUSCADOR ──────────────────────────────────────────────
+function goSearch() {
+  show("s-search");
+  document.getElementById("search-input").value = "";
+  document.getElementById("search-result").innerHTML = "";
+  setTimeout(function() { document.getElementById("search-input").focus(); }, 100);
+}
+
+function quickSearch(id) {
+  document.getElementById("search-input").value = id;
+  doSearch();
+}
+
+function doSearch() {
+  var raw = (document.getElementById("search-input").value || "").trim().toUpperCase();
+  var container = document.getElementById("search-result");
+  if (!raw) {
+    container.innerHTML = '<div style="text-align:center;padding:1rem;font-size:13px;color:var(--text3)">Escribe un ID para buscar.</div>';
+    return;
+  }
+  // Exact match first, then partial
+  var exact = RAW.filter(function(q) { return q.id === raw; });
+  var partial = exact.length ? [] : RAW.filter(function(q) { return q.id.indexOf(raw) !== -1; });
+  var results = exact.length ? exact : partial;
+
+  if (!results.length) {
+    container.innerHTML =
+      '<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center">' +
+      '<div style="font-size:24px;margin-bottom:.5rem">&#128269;</div>' +
+      '<div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:.25rem">No se encontro: ' + esc(raw) + '</div>' +
+      '<div style="font-size:12px;color:var(--text3)">Verifica el ID. Formato: E + numero + letra + 2 digitos<br>Ej: E1A02, E7F05, E0A08</div>' +
+      '</div>';
+    return;
+  }
+
+  // Render results
+  var html = '<div style="font-size:12px;color:var(--text3);margin-bottom:.75rem">' +
+    results.length + ' resultado' + (results.length > 1 ? 's' : '') + ' para <strong style="color:var(--pill-blue-text)">' + esc(raw) + '</strong></div>';
+
+  results.forEach(function(q) {
+    html += renderSearchCard(q);
+  });
+  container.innerHTML = html;
+}
+
+function renderSearchCard(q) {
+  var letter = String.fromCharCode(65 + q.ans);
+  var html = '<div class="qcard" style="margin-bottom:1rem">' +
+    '<div class="qcard-top"><span class="qid">' + q.id + '</span><span class="pill pill-blue" style="font-size:10px">' + esc(TSUBS[q.sub] || q.sub) + '</span></div>' +
+    '<div class="qsub">' + esc(TSUBS[q.sub] || q.sub) + '</div>' +
+    '<div class="qtext">' + esc(q.q) + '</div>' +
+    '<div class="opts">';
+  q.a.forEach(function(ans, i) {
+    var ltr = String.fromCharCode(65 + i);
+    var cls = "opt" + (i === q.ans ? " correct reveal" : "");
+    html += '<button class="' + cls + '" disabled><span class="oletter">' + ltr + '</span><span>' + esc(ans) + '</span></button>';
+  });
+  html += '</div>';
+  // Controls: speak + explain
+  html += '<div style="display:flex;gap:8px;margin-top:.75rem;flex-wrap:wrap">' +
+    '<button class="btn" style="padding:7px 14px;font-size:12px;background:#185FA5;color:#fff;border-color:#185FA5" ' +
+    'id="speak-sr-' + q.id + '" onclick="speakSearchResult(\'' + q.id + '\')">' +
+    '&#128266; Escuchar</button>' +
+    '<button class="btn" id="expl-sr-' + q.id + '" onclick="explainSearchResult(\'' + q.id + '\')" ' +
+    'style="padding:7px 14px;font-size:12px">&#128161; Explicar</button>' +
+    '</div>' +
+    '<div class="aibox" id="ai-sr-' + q.id + '" style="display:none;margin-top:.6rem">' +
+    '<div class="aihdr">&#129302; INSTRUCTOR IA</div>' +
+    '<div class="aitxt" id="aitxt-sr-' + q.id + '"></div>' +
+    '</div>' +
+    '</div>';
+  return html;
+}
+
+function speakSearchResult(id) {
+  var q = RAW.filter(function(x) { return x.id === id; })[0];
+  if (!q) return;
+  var btn = document.getElementById("speak-sr-" + id);
+  if (btn) { btn.disabled = true; btn.style.background = "#0d2218"; btn.style.borderColor = "#1a4a28"; btn.style.color = "#4ade80"; btn.innerHTML = "&#128266; Reproduciendo..."; }
+  var text = q.q + ". Opciones: ";
+  q.a.forEach(function(a, i) { text += String.fromCharCode(65+i) + ": " + a + ". "; });
+  text += "La respuesta correcta es " + String.fromCharCode(65 + q.ans) + ": " + q.a[q.ans] + ".";
+  fetch(WORKER_URL + "/tts", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({text: text}) })
+    .then(function(r) { return r.arrayBuffer(); })
+    .then(function(buf) {
+      var url = URL.createObjectURL(new Blob([buf], {type:"audio/mpeg"}));
+      var audio = new Audio(url);
+      audio.play();
+      audio.onended = function() {
+        URL.revokeObjectURL(url);
+        if (btn) { btn.disabled = false; btn.style.background = "#185FA5"; btn.style.borderColor = "#185FA5"; btn.style.color = "#fff"; btn.innerHTML = "&#128266; Escuchar"; }
+      };
+    }).catch(function() {
+      if (btn) { btn.disabled = false; btn.style.background = "#185FA5"; btn.style.borderColor = "#185FA5"; btn.style.color = "#fff"; btn.innerHTML = "&#128266; Escuchar"; }
+    });
+}
+
+function explainSearchResult(id) {
+  var q = RAW.filter(function(x) { return x.id === id; })[0];
+  if (!q) return;
+  var aiBox = document.getElementById("ai-sr-" + id);
+  var aiTxt = document.getElementById("aitxt-sr-" + id);
+  var btn = document.getElementById("expl-sr-" + id);
+  if (!aiBox || !aiTxt) return;
+  if (aiBox.style.display !== "none" && aiTxt.textContent && !aiTxt.innerHTML.includes("loading-dots")) {
+    aiBox.style.display = "none"; return;
+  }
+  aiBox.style.display = "block";
+  aiTxt.innerHTML = 'Generando explicacion<span class="loading-dots"></span>';
+  if (btn) btn.disabled = true;
+  var prompt = "Pregunta de examen de radioaficionado Amateur Extra (Elemento 4) en espanol:\n\nPregunta: " + q.q + "\n" +
+    q.a.map(function(a,i){return String.fromCharCode(65+i)+") "+a;}).join("\n") +
+    "\n\nRespuesta correcta: " + String.fromCharCode(65+q.ans) + ") " + q.a[q.ans] +
+    "\n\nExplica por que esta es la respuesta correcta en maximo 3 oraciones claras en espanol.";
+  fetch(WORKER_URL + "/explain", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({prompt: prompt}) })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      aiTxt.textContent = d.explanation || d.text || "Sin explicacion disponible.";
+      if (btn) btn.disabled = false;
+    }).catch(function() {
+      aiTxt.textContent = "No se pudo obtener la explicacion.";
+      if (btn) btn.disabled = false;
+    });
 }
 
 // Init
