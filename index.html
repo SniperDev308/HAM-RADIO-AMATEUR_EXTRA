@@ -188,6 +188,36 @@ select:focus{outline:none;border-color:var(--accent)}
 .qfig img{max-width:100%;border-radius:6px}
 .qfig-label{font-size:10px;color:var(--text4);margin-top:.4rem;font-family:monospace;letter-spacing:.05em}
 
+
+.tema-stats-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.9rem 1rem;margin-top:.75rem}
+.tema-stats-header{font-size:12px;font-weight:600;color:var(--text);margin-bottom:.65rem}
+.tema-stats-empty{font-size:12px;color:var(--text3);text-align:center;padding:.25rem 0}
+.tema-stats-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:.75rem}
+.tema-stat-pill{background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:.55rem;text-align:center}
+.tsp-val{font-size:18px;font-weight:700}
+.tsp-lbl{font-size:10px;color:var(--text3);margin-top:2px}
+.tema-stats-breakdown{border-top:1px solid var(--border);padding-top:.65rem}
+.tsb-header{font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+.tsb-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.tsb-label{font-size:11px;color:var(--text2);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tsb-bar-wrap{width:80px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;flex-shrink:0}
+.tsb-bar{height:100%;border-radius:3px;transition:width .3s}
+.tsb-nums{font-size:11px;min-width:70px;text-align:right;white-space:nowrap;flex-shrink:0}
+
+.subtema-list{margin-top:.75rem}
+.subtema-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem .85rem;background:var(--bg3);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer;transition:all .15s;gap:8px}
+.subtema-row:hover{border-color:var(--accent);background:var(--accent-bg)}
+.subtema-row-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.subtema-row-label{font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.subtema-row-count{font-size:11px;color:var(--pill-blue-text);font-weight:600;white-space:nowrap}
+.subtema-arrow{font-size:14px;color:var(--accent);flex-shrink:0}
+.subtema-mode-bar{display:flex;gap:6px;margin-bottom:.75rem;flex-wrap:wrap}
+.stm-btn{flex:1;min-width:70px;padding:8px 6px;border-radius:9px;border:1px solid var(--border2);background:var(--card);cursor:pointer;text-align:center;transition:all .15s;font-size:11px;font-weight:600;color:var(--text)}
+.stm-btn:hover{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+.stm-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.back-to-subtemas{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-size:12px;border:1px solid var(--border2);border-radius:7px;cursor:pointer;background:var(--card);color:var(--text3);margin-bottom:.75rem}
+.back-to-subtemas:hover{border-color:var(--accent);color:var(--accent)}
+
 .review-box p{font-size:13px;color:var(--text3);margin-bottom:1.25rem;line-height:1.6}
 </style>
 </head>
@@ -238,6 +268,15 @@ select:focus{outline:none;border-color:var(--accent)}
   <div class="progress-section">
     <h3>&#128202; Mis estadisticas</h3>
     <div id="home-prog"></div>
+  </div>
+  <!-- PAYPAL -->
+  <div style="text-align:center;padding:.75rem 0 1.5rem">
+    <a href="https://www.paypal.com/ncp/payment/7TG68C7CVWY46" target="_blank" rel="noopener"
+       style="display:inline-flex;align-items:center;gap:8px;padding:10px 22px;background:#0070ba;color:#fff;border-radius:24px;font-size:13px;font-weight:600;text-decoration:none;transition:background .15s;box-shadow:0 2px 8px rgba(0,112,186,.35)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-.013.076-.026.175-.041.254-.59 3.025-2.566 6.082-8.558 6.082H9.825l-1.33 8.398h3.787c.457 0 .846-.332.918-.784l.038-.196.733-4.64.047-.254a.932.932 0 0 1 .918-.784h.578c3.741 0 6.671-1.52 7.526-5.912.358-1.84.173-3.373-.818-4.623z"/></svg>
+      Apoyar este proyecto
+    </a>
+    <div style="font-size:11px;color:var(--text4);margin-top:.5rem">Tu apoyo ayuda a mantener esta app gratuita &#9829;</div>
   </div>
 </div>
 
@@ -432,9 +471,10 @@ select:focus{outline:none;border-color:var(--accent)}
     </div>
   </div>
   <div id="tema-preview" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem">
-    <div style="font-size:11px;color:var(--text4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem">Preguntas de este tema</div>
+    <div id="tema-preview-header" style="font-size:11px;color:var(--text4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem">Preguntas de este tema</div>
     <div id="tema-preview-list" style="display:flex;flex-wrap:wrap;gap:5px"></div>
   </div>
+  <div id="tema-stats-panel"></div>
 </div>
 
 <!-- TEMA REPASAR -->
@@ -570,7 +610,7 @@ var POOL_GRP = {"E1":62,"E2":56,"E3":36,"E4":59,"E5":45,"E6":63,"E7":91,"E8":44,
 var EXAM_GRP = {"E1":6,"E2":5,"E3":3,"E4":5,"E5":4,"E6":6,"E7":8,"E8":4,"E9":8,"E0":1};
 var WORKER_URL = "https://ham-radio-extra-api.franklinsandovalit.workers.dev";
 
-var sess = {correct:0,total:0,reviewed:0,byGroup:{},bySub:{}};
+var sess = {correct:0,total:0,reviewed:0,byGroup:{},bySub:{},byTema:{}};
 var repPool = [], repIdx = 0;
 var fcPool = [], fcIdx = 0, fcFlipped = false;
 var quizQs = [], quizIdx = 0, quizAnswers = [], quizResults = [];
@@ -646,11 +686,12 @@ function loadStats() {
         if (!sess.byGroup) sess.byGroup = {};
         if (!sess.bySub) sess.bySub = {};
         if (!sess.total) sess.total = 0;
+        if (!sess.byTema) sess.byTema = {};
       }
     }
   } catch(e) {}
 }
-function resetStats() { sess = {correct:0,total:0,reviewed:0,byGroup:{},bySub:{}}; saveStats(); updateHomeProg(); }
+function resetStats() { sess = {correct:0,total:0,reviewed:0,byGroup:{},bySub:{},byTema:{}}; saveStats(); updateHomeProg(); }
 
 function saveRepPos() {
   try { localStorage.setItem("efcc_rep", JSON.stringify({grp:lastRepGrp,sub:lastRepSub,idx:repIdx})); } catch(e) {}
@@ -668,11 +709,34 @@ function updateHomeProg() {
   }
   var pct = sess.total > 0 ? Math.round((sess.correct / sess.total) * 100) : 0;
   var col = pct >= 74 ? "var(--pass)" : pct >= 50 ? "var(--amber)" : "var(--fail)";
-  var html = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:.75rem">';
+  var html = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:.85rem">';
   html += '<div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:.65rem;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--pill-blue-text)">' + sess.total + '</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Respondidas</div></div>';
   html += '<div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:.65rem;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--pass)">' + sess.correct + '</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Correctas</div></div>';
   html += '<div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:.65rem;text-align:center"><div style="font-size:20px;font-weight:700;color:' + col + '">' + pct + '%</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Precision</div></div>';
-  html += '</div><div style="text-align:right"><button onclick="resetStats()" style="padding:5px 12px;font-size:11px;border:1px solid var(--border2);border-radius:6px;cursor:pointer;background:var(--card);color:var(--text3)">Reiniciar</button></div>';
+  html += '</div>';
+  // Per-tema bars
+  var byT = sess.byTema || {};
+  var tKeys = Object.keys(byT).filter(function(k){ return byT[k].t > 0; });
+  if (tKeys.length > 0) {
+    tKeys.sort(function(a,b){ return byT[b].t - byT[a].t; });
+    html += '<div style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;margin-bottom:.75rem">';
+    html += '<div style="font-size:10px;color:var(--text4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem">Progreso por tema</div>';
+    tKeys.forEach(function(k) {
+      var td = byT[k];
+      var tp = Math.round((td.c/td.t)*100);
+      var tc = tp>=74 ? "var(--pass)" : tp>=50 ? "var(--amber)" : "var(--fail)";
+      var rawLabel = TEMA_CLUSTERS[k] ? TEMA_CLUSTERS[k].label : k;
+      var label = rawLabel.replace(/^\S+\s/, '');
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">' +
+        '<span style="font-size:11px;color:var(--text2);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+label+'</span>' +
+        '<div style="width:90px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;flex-shrink:0"><div style="width:'+tp+'%;height:100%;background:'+tc+';border-radius:3px"></div></div>' +
+        '<span style="font-size:11px;color:var(--text3);min-width:28px;text-align:right;flex-shrink:0">'+td.t+'</span>' +
+        '<span style="font-size:11px;font-weight:700;color:'+tc+';min-width:30px;text-align:right;flex-shrink:0">'+tp+'%</span>' +
+        '</div>';
+    });
+    html += '</div>';
+  }
+  html += '<div style="text-align:right"><button onclick="resetStats()" style="padding:5px 12px;font-size:11px;border:1px solid var(--border2);border-radius:6px;cursor:pointer;background:var(--card);color:var(--text3)">Reiniciar todo</button></div>';
   el.innerHTML = html;
 }
 
@@ -1588,6 +1652,162 @@ function explainSearchResult(id) {
     .catch(function(){aiTxt.textContent="No se pudo obtener la explicacion.";if(btn)btn.disabled=false;});
 }
 
+var SUBTEMAS = {
+  "reglamento": [
+    {key:"reg_bandas",label:"Bandas y Frecuencias",ids:["E1A02", "E1A04", "E1A06", "E1A07", "E1A09", "E1B02", "E1B04", "E1B06", "E1B08", "E1C05", "E1C07", "E1C10", "E1C12", "E1D03", "E1D05", "E1D06", "E1F02", "E1F03", "E1F11", "E2A06", "E2B08", "E2C03", "E2C04", "E2C06", "E2C09", "E3A03", "E3A13", "E3C10", "E4D05", "E4E09", "E6B08", "E8B02", "E9H02", "E0A02", "E0A03", "E0A10"]},
+    {key:"reg_terceros",label:"Tráfico / Internacional / CEPT",ids:["E1A02", "E1A08", "E1A09", "E1A10", "E1B02", "E1B08", "E1B09", "E1C02", "E1C04", "E1C06", "E1C11", "E1F02", "E1F08", "E2B08", "E2B09", "E2B12", "E2C09", "E4C02", "E4C03", "E4C04", "E4C05", "E4C06", "E4C07", "E4C08", "E4C09", "E4C10", "E4C11", "E4C12", "E4C13", "E4C14", "E4D02", "E4D04", "E4D05", "E4D06", "E4D07", "E4D09", "E4D10", "E4D11", "E4D12", "E4D14", "E4E06", "E4E11", "E5B02", "E5B05", "E5B06", "E6A04", "E7C08", "E7E06", "E7E07", "E7F10", "E7F11", "E8D03", "E8D09", "E9H10", "E0A09"]},
+    {key:"reg_control",label:"Control y Operación",ids:["E1A08", "E1B04", "E1B10", "E1C06", "E1C07", "E1D05", "E1D10", "E1D11", "E1F06", "E1F10", "E2C11", "E2C12"]},
+    {key:"reg_ve",label:"Examinadores VE / VEC",ids:["E1A05", "E1D06", "E1E04", "E1E05", "E1E06", "E1E07", "E1E08", "E1E09", "E1E10", "E1E11", "E3B07", "E6C02", "E8D04", "E8D05", "E9C04", "E9C11", "E9D10"]},
+    {key:"reg_misc",label:"Reglas Misceláneas",ids:["E1A04", "E1A05", "E1A08", "E1A10", "E1A11", "E1B09", "E1B10", "E1C02", "E1C05", "E1C06", "E1D06", "E1D12", "E1E09", "E1E11", "E1F03", "E1F06", "E1F07", "E1F08", "E1F11", "E2C09", "E2C11", "E3A03", "E4C05", "E4D09", "E4D10", "E4E11", "E7C08", "E7E07", "E7F12"]},
+  ],
+  "seguridad_rf": [
+    {key:"rf_mpe",label:"Límites MPE / Evaluación",ids:["E1F08", "E3C11", "E4A04", "E4A07", "E4A09", "E4B02", "E4B11", "E4C05", "E5A03", "E5A04", "E5A05", "E5B03", "E5B06", "E5B12", "E5C02", "E5C05", "E5C06", "E5C07", "E5C09", "E5C10", "E5C11", "E5C12", "E5D04", "E5D07", "E5D11", "E6A05", "E6B07", "E6C03", "E6C04", "E6E04", "E6E06", "E6F08", "E7B03", "E7B06", "E7B09", "E7C04", "E7D09", "E7D15", "E7G03", "E7G12", "E7H13", "E9A04", "E9B09", "E9B11", "E9C05", "E9C07", "E9E04", "E9E05", "E9E06", "E9E07", "E9E08", "E9F02", "E9F04", "E9F09", "E9F10", "E9F11", "E9F12", "E9G03", "E9G04", "E9G05", "E9G06", "E9G08", "E9G09", "E9H10", "E0A02", "E0A04", "E0A06", "E0A09", "E0A10"]},
+    {key:"rf_sar",label:"SAR y Efectos Biológicos",ids:["E1A04", "E1B04", "E1B06", "E1B08", "E1C06", "E1E04", "E1E06", "E1E11", "E2A12", "E2B08", "E2C04", "E2D02", "E4A05", "E4A07", "E4A09", "E4C12", "E4E07", "E4E09", "E5B06", "E5C09", "E6D05", "E6D10", "E7B03", "E7B05", "E7B07", "E7D15", "E7E04", "E7F06", "E7F08", "E7F12", "E7G04", "E7H07", "E7H08", "E7H13", "E8A05", "E8D11", "E9D02", "E9E08", "E9H02", "E0A05", "E0A08"]},
+    {key:"rf_torre",label:"Seguridad en Torres",ids:["E1B07", "E6B02", "E6B03", "E6B05", "E7D12", "E7F12", "E8D04", "E8D05", "E9E09", "E0A07", "E0A11", "E0A12"]},
+    {key:"rf_tierra",label:"Tierra Eléctrica",ids:["E4E13", "E4E14", "E9E09"]},
+  ],
+  "antenas": [
+    {key:"ant_yagi",label:"Yagi y Arrays Directivos",ids:["E2A06", "E9C09", "E9D02", "E9D05", "E9D11", "E9D12", "E9E05"]},
+    {key:"ant_dipolo",label:"Dipolos y Antenas Horizontales",ids:["E2A11", "E9A05", "E9A12", "E9C05", "E9C07", "E9C08", "E9C09", "E9C10", "E9C12", "E9H03"]},
+    {key:"ant_vertical",label:"Verticales y Radiales",ids:["E9A10", "E9A11", "E9D03", "E9D07", "E9D10"]},
+    {key:"ant_patron",label:"Patrones de Radiación y Ganancia",ids:["E1B04", "E1F03", "E1F11", "E3A06", "E3C04", "E4B03", "E4D07", "E4D12", "E4D13", "E5B12", "E6A06", "E6A08", "E6E06", "E7B03", "E7B06", "E7B08", "E7G05", "E7G06", "E7G07", "E7G08", "E7G10", "E7G11", "E7G12", "E7H07", "E8A07", "E8A09", "E9A02", "E9A03", "E9A05", "E9A06", "E9A07", "E9A11", "E9A12", "E9B02", "E9B03", "E9B04", "E9B05", "E9B06", "E9B07", "E9B08", "E9C02", "E9C03", "E9C04", "E9C05", "E9C06", "E9C08", "E9C11", "E9C13", "E9C14", "E9D02", "E9D08", "E9D11", "E9E11", "E9G05", "E9G09", "E9H03", "E9H09", "E0A05"]},
+    {key:"ant_recepcion",label:"Antenas de Recepción y DF",ids:["E3A14", "E9C09", "E9D11", "E9H03", "E9H04", "E9H05", "E9H06", "E9H07", "E9H08", "E9H09", "E9H10", "E9H11"]},
+    {key:"ant_efic",label:"Eficiencia, Adaptación y Tierra",ids:["E4D12", "E4D13", "E9A02", "E9A03", "E9A04", "E9A05", "E9A06", "E9A07", "E9A09", "E9A11", "E9B07", "E9B11", "E9C06", "E9D07", "E9D09", "E9D10", "E9D12", "E9E02", "E9E04", "E9E05", "E9G05", "E9G09", "E9H02", "E9H04"]},
+  ],
+  "propagacion": [
+    {key:"prop_ionos",label:"Ionosfera y MUF",ids:["E3A03", "E3A06", "E3B07", "E3B10", "E3C02", "E3C03", "E3C04"]},
+    {key:"prop_solar",label:"Clima Espacial / Solar",ids:["E1C04", "E3A12", "E3A13", "E3C02", "E3C03", "E3C04", "E3C05", "E3C08", "E3C09", "E3C12"]},
+    {key:"prop_especial",label:"Modos Especiales (Meteor, TEP, NVIS)",ids:["E3A07", "E3A08", "E3A09", "E3A11", "E3A12", "E3B02", "E3B03", "E3B08", "E3B13", "E3C03", "E3C08", "E3C12", "E4E07", "E4E08", "E5D02", "E5D10", "E6A02", "E6A03", "E6A04", "E6B03", "E6B04", "E6B08", "E6E12", "E6F06", "E6F07", "E9E02", "E9F02", "E9F05", "E9F06", "E9F07"]},
+    {key:"prop_eme_esp",label:"EME y Propagación Espacial",ids:["E1B11", "E1C02", "E1D03", "E1D04", "E1E11", "E2A06", "E2A08", "E2A12", "E2C09", "E2D03", "E2D06", "E2D08", "E2E12", "E3A02", "E3A03", "E4C06", "E6B06", "E6E11", "E6F07", "E7A06", "E7D02", "E7F12", "E7F13", "E7H10", "E8B07", "E9A10", "E9B07", "E9C06", "E9C09", "E9D02", "E9D05", "E9D11", "E9D12", "E9E05", "E9E11"]},
+    {key:"prop_ondas",label:"Ondas Electromagnéticas",ids:["E3B13", "E3C04", "E3C09", "E9C06", "E9D02"]},
+  ],
+  "digital_hf": [
+    {key:"dig_wsjtx",label:"WSJT-X / Señales Débiles",ids:["E2D02", "E2D03", "E2D04", "E2D05", "E2D09", "E2E03", "E2E04", "E2E05", "E2E06", "E2E07", "E2E10", "E2E13", "E8C06"]},
+    {key:"dig_psk",label:"PSK y Modos de Fase",ids:["E2A07", "E2B07", "E2D09", "E2E03", "E2E05", "E2E08", "E2E09", "E8C03", "E8C04", "E8D09"]},
+    {key:"dig_rtty",label:"RTTY / Baudot / FSK",ids:["E1C05", "E2B07", "E2D05", "E2D09", "E2E03", "E2E04", "E2E05", "E2E08", "E2E09", "E2E10", "E2E11", "E2E13", "E3A13", "E6F05", "E8C07", "E8D07", "E8D08", "E8D10"]},
+    {key:"dig_errores",label:"Corrección de Errores / Protocolos",ids:["E1B11", "E2A02", "E2A08", "E2A11", "E2D03", "E2D04", "E2D07", "E2E08", "E2E09", "E2E10", "E2E13", "E3B07", "E3B10", "E4A06", "E4A10", "E4C02", "E4C03", "E4C05", "E4C12", "E4E09", "E4E10", "E5A13", "E5B05", "E5B12", "E5D05", "E5D06", "E5D08", "E5D10", "E6A05", "E6A09", "E6D03", "E6E09", "E6F04", "E6F08", "E7D15", "E7F08", "E7H02", "E8A10", "E8C04", "E8C08", "E8C09", "E8C12", "E8D04", "E8D08", "E9A02", "E9A03", "E9A04", "E9A06", "E9A07", "E9A09", "E9C04", "E9C06", "E9C11", "E9F02", "E9F03", "E0A10"]},
+    {key:"dig_espectro",label:"Espectro Ensanchado / OFDM / Otros",ids:["E2D04", "E2D05", "E2E05", "E2E09", "E2E10", "E2E11", "E2E13", "E4C05", "E4E09", "E8A10", "E8C03", "E8C04", "E8C06", "E8C07", "E8C09", "E8C12", "E8D02", "E8D06", "E8D08", "E8D10", "E8D11", "E9A03"]},
+  ],
+  "amplif": [
+    {key:"amp_clases",label:"Clases A / B / C / D / E",ids:["E1B09", "E1D10", "E1D11", "E1F02", "E1F10", "E3C07", "E4D04", "E7B02", "E7B04", "E7B07"]},
+    {key:"amp_bjt_fet",label:"Amplificadores BJT y FET",ids:["E6E08", "E7B04", "E7B06", "E7B09", "E7B12", "E7D08"]},
+    {key:"amp_opamp",label:"Amplificadores Operacionales",ids:["E1F03", "E1F11", "E4B10", "E4C10", "E4D09", "E6C07", "E6E08", "E6F09", "E7A10", "E7B05", "E7G03", "E7G04", "E7G05", "E7G06", "E7G08", "E7G12", "E7H02"]},
+    {key:"amp_rf",label:"Amplificadores RF y Estabilidad",ids:["E1F03", "E1F11", "E4D08", "E7B02", "E7B03", "E7B05", "E7F10"]},
+  ],
+  "circuitos_lc": [
+    {key:"lc_resonancia",label:"Resonancia / Q / Ancho de Banda",ids:["E4A07", "E4A11", "E4B08", "E5A02", "E5A03", "E5A04", "E5A06", "E5A07", "E5A08", "E5A10", "E5A11", "E5A12", "E5B07", "E5B08", "E5B11", "E5D06", "E5D07", "E5D12", "E6D02", "E7G05", "E9A03", "E9D10", "E9D12"]},
+    {key:"lc_impedancia",label:"Impedancia Compleja / Fasores",ids:["E3A10", "E4B08", "E5A03", "E5A04", "E5A09", "E5B02", "E5B03", "E5B05", "E5B06", "E5B07", "E5B08", "E5B11", "E5B12", "E5C02", "E5C03", "E5C05", "E5C06", "E5C08", "E5D02", "E5D07", "E5D11", "E7C04", "E7E02", "E7E04", "E7E10", "E7H03", "E8A05", "E9D04", "E9D09", "E9E04", "E9F10", "E9F11", "E9G02", "E9G04", "E9G06", "E9G07", "E9G08", "E9G10"]},
+    {key:"lc_potencia",label:"Potencia Reactiva / Factor de Potencia",ids:["E5D11", "E5D12", "E7C04", "E9A03"]},
+    {key:"lc_parasitos",label:"Componentes Parásitos y Parasitarios",ids:["E5D06", "E5D07"]},
+  ],
+  "lineas_tx": [
+    {key:"ltx_coaxial",label:"Coaxial y Líneas Paralelas",ids:["E4A11", "E4B05", "E6E07", "E9A10", "E9C08", "E9C09", "E9E02", "E9E03", "E9E07", "E9F02", "E9F03", "E9F04", "E9F05", "E9F06", "E9F07", "E9F08", "E9F09", "E9F10", "E9F11", "E9F12", "E9G05", "E9G09"]},
+    {key:"ltx_swr",label:"SWR / ROE / Reflexión",ids:["E4A02", "E4A07", "E4A08", "E4B04", "E4B11", "E9A11", "E9D06", "E9D08", "E9D09", "E9D11", "E9E07", "E9F07", "E9G03", "E9G09", "E9G10", "E9H06", "E9H07"]},
+    {key:"ltx_adapt",label:"Adaptación de Impedancia",ids:["E9E02", "E9E03", "E9E04", "E9E05", "E9E06", "E9E08", "E9E09", "E9G05"]},
+    {key:"ltx_smith",label:"Diagrama de Smith",ids:["E9G02", "E9G03", "E9G04", "E9G05", "E9G06", "E9G07", "E9G08", "E9G09", "E9G10", "E9G11"]},
+  ],
+  "filtros": [
+    {key:"fil_respuesta",label:"Respuesta y Tipos (Butterworth, Chebyshev...)",ids:["E4C11", "E4D04", "E4E04", "E4E05", "E7B03", "E7C02", "E7C05", "E7C06", "E7C08", "E7C11", "E7F03", "E7F12", "E7G02", "E7H03", "E7H09", "E8A10", "E8C12", "E8D05"]},
+    {key:"fil_redes",label:"Redes de Adaptación y LC",ids:["E7C03", "E7C07"]},
+    {key:"fil_dsp",label:"Filtros DSP (FIR / IIR / Adaptativo)",ids:["E7C08", "E7F02", "E7F03", "E7F12", "E7F13", "E7F14"]},
+    {key:"fil_cristal",label:"Filtros de Cristal y Cavidad",ids:["E7C08", "E7C09", "E7C10", "E7F02"]},
+    {key:"fil_receptor",label:"Filtros en Receptores / IF",ids:["E4C02", "E4C12", "E4D11", "E7C02", "E7C08"]},
+  ],
+  "receptor": [
+    {key:"rec_superhet",label:"Superheterodino / FI / Imagen",ids:["E2B12", "E4C02", "E4C09", "E4D09", "E4D11"]},
+    {key:"rec_ruido",label:"Ruido / MDS / Sensibilidad",ids:["E4B02", "E4C04", "E4C05", "E4C06", "E4C07", "E4C09", "E4C10", "E4C12", "E4C13", "E4D06", "E4D10", "E6E05", "E6E06", "E9H08"]},
+    {key:"rec_dinamica",label:"Rango Dinámico / AGC / Bloqueo",ids:["E4C03", "E4C12", "E4C13", "E4D02", "E4D06", "E4D07", "E7E09", "E8A11"]},
+    {key:"rec_sdr",label:"SDR / Muestreo Directo",ids:["E4C08", "E7F10", "E7F11"]},
+  ],
+  "osciladores": [
+    {key:"osc_tipos",label:"Tipos (Colpitts, Pierce, VFO...)",ids:["E7H04", "E7H05", "E7H12"]},
+    {key:"osc_pll_dds",label:"PLL / DDS / Sintetizadores",ids:["E7F04", "E7H03", "E7H06", "E7H09", "E7H10", "E7H11"]},
+    {key:"osc_estabilidad",label:"Estabilidad / Deriva / Microfónico",ids:["E4C09", "E4D02", "E4E05", "E6D02", "E7B02", "E7B11", "E7C02", "E7D04", "E7D05", "E7D07", "E7H02", "E7H08", "E7H13", "E8A08", "E9E09"]},
+    {key:"osc_multivibradores",label:"Multivibradores",ids:["E6F07", "E7A05", "E7A06", "E7H03"]},
+  ],
+  "satelites": [
+    {key:"sat_orbitas",label:"Órbitas y Elementos Keplerianos",ids:["E1F04", "E2A04", "E2A06", "E2A10", "E3A03", "E3A07", "E3A12", "E3B12", "E3C02", "E3C04", "E3C06", "E3C08", "E4E04", "E6D04", "E6D05", "E6D06", "E6D09", "E6D10", "E6D11", "E6D12"]},
+    {key:"sat_transponder",label:"Transponders, Modos y Bandas",ids:["E2A02", "E2A04", "E2A05", "E2A08", "E2A09"]},
+    {key:"sat_operacion",label:"Doppler / Operación / Digital",ids:["E1D03", "E1D04", "E1D10", "E2A02", "E2A08", "E2A09", "E2A12", "E2A13", "E2D06", "E8C15"]},
+  ],
+};
+
+
+// TEMA STATS HELPERS
+function recordTemaAnswer(q, ok, tKey, sKey) {
+  if (!tKey) return;
+  if (!sess.byTema[tKey]) sess.byTema[tKey] = {c:0,t:0,bySub:{}};
+  sess.byTema[tKey].t++;
+  if (ok) sess.byTema[tKey].c++;
+  if (sKey) {
+    if (!sess.byTema[tKey].bySub[sKey]) sess.byTema[tKey].bySub[sKey] = {c:0,t:0};
+    sess.byTema[tKey].bySub[sKey].t++;
+    if (ok) sess.byTema[tKey].bySub[sKey].c++;
+  }
+}
+
+function getTemaSubKey(qid) {
+  if (!temaKey) return null;
+  var subs = SUBTEMAS[temaKey];
+  if (!subs) return null;
+  for (var i=0; i<subs.length; i++) {
+    if (subs[i].ids.indexOf(qid) !== -1) return subs[i].key;
+  }
+  return null;
+}
+
+function renderTemaStats() {
+  if (!temaKey) return '';
+  var t = TEMA_CLUSTERS[temaKey];
+  var td = sess.byTema[temaKey];
+  if (!td || td.t === 0) {
+    return '<div class="tema-stats-box"><div class="tema-stats-empty">Sin respuestas en este tema aun. Empieza un quiz!</div></div>';
+  }
+  var pct = Math.round((td.c/td.t)*100);
+  var col = pct>=74 ? 'var(--pass)' : pct>=50 ? 'var(--amber)' : 'var(--fail)';
+  var html = '<div class="tema-stats-box">';
+  html += '<div class="tema-stats-header">&#128202; Mis estadisticas en este tema</div>';
+  html += '<div class="tema-stats-summary">';
+  html += '<div class="tema-stat-pill"><div class="tsp-val" style="color:var(--pill-blue-text)">'+td.t+'</div><div class="tsp-lbl">Respondidas</div></div>';
+  html += '<div class="tema-stat-pill"><div class="tsp-val" style="color:var(--pass)">'+td.c+'</div><div class="tsp-lbl">Correctas</div></div>';
+  html += '<div class="tema-stat-pill"><div class="tsp-val" style="color:'+col+'">'+pct+'%</div><div class="tsp-lbl">Precision</div></div>';
+  html += '</div>';
+  var subs = SUBTEMAS[temaKey];
+  if (subs && subs.length > 0 && Object.keys(td.bySub).length > 0) {
+    html += '<div class="tema-stats-breakdown">';
+    html += '<div class="tsb-header">Desglose por subtema</div>';
+    subs.forEach(function(sub) {
+      var sd = td.bySub[sub.key];
+      if (!sd || sd.t === 0) return;
+      var sp = Math.round((sd.c/sd.t)*100);
+      var sc = sp>=74 ? 'var(--pass)' : sp>=50 ? 'var(--amber)' : 'var(--fail)';
+      html += '<div class="tsb-row">' +
+        '<div class="tsb-label">'+sub.label+'</div>' +
+        '<div class="tsb-bar-wrap"><div class="tsb-bar" style="width:'+sp+'%;background:'+sc+'"></div></div>' +
+        '<div class="tsb-nums"><span style="color:var(--text3)">'+sd.c+'/'+sd.t+'</span> <span style="font-weight:700;color:'+sc+'">'+sp+'%</span></div>' +
+        '</div>';
+    });
+    html += '</div>';
+  }
+  html += '<div style="text-align:right;margin-top:.5rem"><button onclick="resetTemaStats()" style="padding:4px 10px;font-size:11px;border:1px solid var(--border2);border-radius:6px;cursor:pointer;background:var(--card);color:var(--text3)">Reiniciar tema</button></div>';
+  html += '</div>';
+  return html;
+}
+
+function resetTemaStats() {
+  if (!temaKey) return;
+  if (sess.byTema[temaKey]) {
+    var td = sess.byTema[temaKey];
+    sess.total -= td.t; sess.correct -= td.c;
+    if (sess.total < 0) sess.total = 0;
+    if (sess.correct < 0) sess.correct = 0;
+    delete sess.byTema[temaKey];
+  }
+  saveStats(); updateHomeProg();
+  var el = document.getElementById('tema-stats-panel');
+  if (el) el.innerHTML = renderTemaStats();
+}
+
 // ── ESTUDIAR POR TEMA ─────────────────────────────────────────────────
 var temaKey = null;        // current theme key
 var temaPool = [];         // questions for current theme
@@ -1637,12 +1857,67 @@ function goTemaDetail(key) {
   document.getElementById("tema-sub-title").textContent = t.label;
   document.getElementById("tema-sub-count").textContent = temaPool.length + " preguntas";
 
-  // Preview chips
-  var chips = temaPool.map(function(q) {
-    return '<span class="pill pill-gray" style="font-family:monospace;font-size:10px">' + q.id + '</span>';
-  }).join("");
-  document.getElementById("tema-preview-list").innerHTML = chips;
+  // If this tema has subtemas, show them
+  var hasSub = SUBTEMAS[key] && SUBTEMAS[key].length > 0;
+  var previewEl = document.getElementById("tema-preview-list");
+  if (hasSub) {
+    var subHtml = '<div class="subtema-list">';
+    SUBTEMAS[key].forEach(function(sub) {
+      subHtml += '<div class="subtema-row" onclick="goSubtema(\''+key+'\',\''+sub.key+'\',this)">' +
+        '<div class="subtema-row-left">' +
+        '<span class="subtema-row-label">'+sub.label+'</span>' +
+        '</div>' +
+        '<span class="subtema-row-count">'+sub.ids.length+' preg.</span>' +
+        '<span class="subtema-arrow">&#8594;</span>' +
+        '</div>';
+    });
+    subHtml += '<div class="subtema-row" style="opacity:.7" onclick="startTemaMode(\'repasar\')">' +
+      '<div class="subtema-row-left"><span class="subtema-row-label">&#128218; Todo el tema completo</span></div>' +
+      '<span class="subtema-row-count">'+temaPool.length+' preg.</span>' +
+      '<span class="subtema-arrow">&#8594;</span>' +
+      '</div>';
+    subHtml += '</div>';
+    previewEl.innerHTML = subHtml;
+  } else {
+    var chips = temaPool.map(function(q) {
+      return '<span class="pill pill-gray" style="font-family:monospace;font-size:10px">' + q.id + '</span>';
+    }).join("");
+    previewEl.innerHTML = chips;
+  }
+
+  // Adjust preview label
+  var previewHeader = document.querySelector('#s-tema-sub [style*="uppercase"]');
+  if (previewHeader) {
+    previewHeader.textContent = hasSub ? 'Subtemas disponibles' : 'Preguntas de este tema';
+  }
+
   show("s-tema-sub");
+  var sp=document.getElementById("tema-stats-panel");
+  if(sp)sp.innerHTML=renderTemaStats();
+}
+
+var subtemaKey = null;
+
+function goSubtema(temaKeyArg, subKey, rowEl) {
+  var sub = SUBTEMAS[temaKeyArg].filter(function(s){return s.key===subKey;})[0];
+  if (!sub) return;
+  subtemaKey = subKey;
+  // Override temaPool with subtema questions
+  temaPool = sub.ids.map(function(id){
+    return RAW.filter(function(q){return q.id===id;})[0];
+  }).filter(Boolean);
+  // Update title display
+  document.getElementById("tema-sub-title").textContent = TEMA_CLUSTERS[temaKeyArg].label + ' › ' + sub.label;
+  document.getElementById("tema-sub-count").textContent = temaPool.length + " preguntas";
+  // Show mode buttons (hide subtema list, show mode bar)
+  document.getElementById("tema-preview-list").innerHTML =
+    '<div class="subtema-mode-bar">' +
+    '<button class="stm-btn" onclick="startTemaMode(\'repasar\')">&#128214; Repasar</button>' +
+    '<button class="stm-btn" onclick="startTemaMode(\'flash\')">&#127183; Flashcards</button>' +
+    '<button class="stm-btn" onclick="startTemaMode(\'quiz\')">&#9999; Quiz</button>' +
+    '<button class="stm-btn" style="background:transparent;border-style:dashed" onclick="goTemaDetail(\''+temaKeyArg+'\')">&#8592; Subtemas</button>' +
+    '</div>' +
+    '<div style="font-size:11px;color:var(--text3);margin-top:.25rem">'+temaPool.length+' preguntas en este subtema</div>';
 }
 
 function startTemaMode(mode) {
@@ -1908,6 +2183,8 @@ function gradeTemaQuiz(){
     sess.bySub[q.sub].t++;
     if(ok)sess.bySub[q.sub].c++;
     sess.total++;
+    var sKey = subtemaKey || getTemaSubKey(q.id);
+    recordTemaAnswer(q, ok, temaKey, sKey);
   });
   saveStats();
   showTemaQuizResult(score);
