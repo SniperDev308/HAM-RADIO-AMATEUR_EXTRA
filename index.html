@@ -904,8 +904,41 @@ function speakQuestion(q, onDone) {
 }
 
 // ── Control de voz: corta cualquier audio en curso ────────────
-// Guarda el audio del Worker que esta sonando para poder detenerlo
+// Un unico elemento de audio reutilizable (necesario para iOS/Safari,
+// que solo permite reproducir audio en un elemento desbloqueado por un toque)
+var ttsAudio = null;
+var audioUnlocked = false;
 var currentAudio = null;
+
+// Silencio minimo en WAV para "desbloquear" el audio dentro del gesto del toque
+var SILENT_WAV = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=";
+
+// Debe llamarse DENTRO de un evento de toque/clic (p.ej. al pulsar Auto).
+// Desbloquea tanto el audio HTML5 como la voz del navegador en iOS.
+function unlockAudio() {
+  try {
+    if (!ttsAudio) {
+      ttsAudio = new Audio();
+      ttsAudio.playsInline = true;
+      ttsAudio.setAttribute("playsinline", "");
+    }
+    if (!audioUnlocked) {
+      ttsAudio.src = SILENT_WAV;
+      var p = ttsAudio.play();
+      if (p && p.then) { p.then(function(){}).catch(function(){}); }
+      // Prepara la voz del navegador (Web Speech API) tambien dentro del gesto
+      if ("speechSynthesis" in window) {
+        try {
+          var u = new SpeechSynthesisUtterance(" ");
+          u.volume = 0;
+          window.speechSynthesis.speak(u);
+        } catch (e) {}
+      }
+      audioUnlocked = true;
+    }
+  } catch (e) {}
+}
+
 function stopAllSpeech() {
   // Detiene la voz del navegador (Web Speech API)
   try { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); } catch (e) {}
@@ -915,10 +948,28 @@ function stopAllSpeech() {
       currentAudio.onended = null;
       currentAudio.onerror = null;
       currentAudio.pause();
-      currentAudio.src = "";
     } catch (e) {}
     currentAudio = null;
   }
+}
+
+// Reproduce el audio del Worker en el elemento compartido (clave para iOS).
+function playTTS(buf, onDone, onFail) {
+  if (!buf || buf.byteLength < 256) { if (onFail) onFail(); return; }
+  try {
+    if (!ttsAudio) {
+      ttsAudio = new Audio();
+      ttsAudio.playsInline = true;
+      ttsAudio.setAttribute("playsinline", "");
+    }
+    var url = URL.createObjectURL(new Blob([buf], {type:"audio/mpeg"}));
+    currentAudio = ttsAudio;
+    ttsAudio.onended = function() { URL.revokeObjectURL(url); if (onDone) onDone(); };
+    ttsAudio.onerror = function() { URL.revokeObjectURL(url); if (onFail) onFail(); };
+    ttsAudio.src = url;
+    var p = ttsAudio.play();
+    if (p && p.catch) { p.catch(function() { URL.revokeObjectURL(url); if (onFail) onFail(); }); }
+  } catch (e) { if (onFail) onFail(); }
 }
 
 // ── Respaldo de voz del navegador (Web Speech API) ────────────
@@ -958,26 +1009,9 @@ function speakText(text, onDone) {
       return res.arrayBuffer();
     })
     .then(function(buf) {
-      if (!buf || buf.byteLength < 256) throw new Error("empty audio");
-      var blob = new Blob([buf], {type:"audio/mpeg"});
-      var url = URL.createObjectURL(blob);
-      var audio = new Audio(url);
-      currentAudio = audio;
-      audio.onended = function() {
-        URL.revokeObjectURL(url);
-        resetSpeakBtn();
-        if (onDone) onDone();
-      };
-      audio.onerror = function() {
-        URL.revokeObjectURL(url);
-        resetSpeakBtn();
-        browserSpeak(text, onDone);
-      };
-      audio.play().catch(function() {
-        URL.revokeObjectURL(url);
-        resetSpeakBtn();
-        browserSpeak(text, onDone);
-      });
+      playTTS(buf,
+        function() { resetSpeakBtn(); if (onDone) onDone(); },
+        function() { resetSpeakBtn(); browserSpeak(text, onDone); });
     })
     .catch(function() {
       resetSpeakBtn();
@@ -1011,6 +1045,7 @@ function toggleAutoRep() {
     btn.innerHTML = autoRepActive ? "&#9646;&#9646; Auto" : "&#9654; Auto";
   }
   if (autoRepActive) {
+    unlockAudio();
     // Espera 3s antes de empezar a leer
     clearAutoRep();
     autoRepTimer = setTimeout(function() {
@@ -1191,26 +1226,9 @@ function speakFCText(text, onDone) {
       return res.arrayBuffer();
     })
     .then(function(buf) {
-      if (!buf || buf.byteLength < 256) throw new Error("empty audio");
-      var blob = new Blob([buf], {type:"audio/mpeg"});
-      var url = URL.createObjectURL(blob);
-      var audio = new Audio(url);
-      currentAudio = audio;
-      audio.onended = function() {
-        URL.revokeObjectURL(url);
-        resetFCSpeakBtn();
-        if (onDone) onDone();
-      };
-      audio.onerror = function() {
-        URL.revokeObjectURL(url);
-        resetFCSpeakBtn();
-        browserSpeak(text, onDone);
-      };
-      audio.play().catch(function() {
-        URL.revokeObjectURL(url);
-        resetFCSpeakBtn();
-        browserSpeak(text, onDone);
-      });
+      playTTS(buf,
+        function() { resetFCSpeakBtn(); if (onDone) onDone(); },
+        function() { resetFCSpeakBtn(); browserSpeak(text, onDone); });
     })
     .catch(function() {
       resetFCSpeakBtn();
@@ -1242,6 +1260,7 @@ function toggleAutoFC() {
   fcAutoActive = !fcAutoActive;
   updateFCAutoBtn();
   if (fcAutoActive) {
+    unlockAudio();
     clearFCTimer();
     fcAutoTimer = setTimeout(function() {
       if (fcAutoActive) renderFC(); // renderFC handles the full auto sequence
@@ -2044,7 +2063,7 @@ function temaRepNext(){ if(temaRepIdx<temaPool.length-1){temaRepIdx++;renderTema
 function toggleAutoTema(){
   temaAutoActive=!temaAutoActive;
   updateTemaAutoBtn();
-  if(temaAutoActive){ if(temaAutoTimer){clearTimeout(temaAutoTimer);} temaAutoTimer=setTimeout(function(){ if(temaAutoActive) renderTemaRep(); },3000); }
+  if(temaAutoActive){ unlockAudio(); if(temaAutoTimer){clearTimeout(temaAutoTimer);} temaAutoTimer=setTimeout(function(){ if(temaAutoActive) renderTemaRep(); },3000); }
   else{ if(temaAutoTimer){clearTimeout(temaAutoTimer);temaAutoTimer=null;} stopAllSpeech(); }
 }
 function updateTemaAutoBtn(){
@@ -2138,7 +2157,7 @@ function speakTemaFC(){
 function toggleAutoTemaFC(){
   temaFCAutoActive=!temaFCAutoActive;
   updateTemaFCAutoBtn();
-  if(temaFCAutoActive){if(temaFCAutoTimer){clearTimeout(temaFCAutoTimer);}temaFCAutoTimer=setTimeout(function(){if(temaFCAutoActive)renderTemaFC();},3000);}
+  if(temaFCAutoActive){unlockAudio();if(temaFCAutoTimer){clearTimeout(temaFCAutoTimer);}temaFCAutoTimer=setTimeout(function(){if(temaFCAutoActive)renderTemaFC();},3000);}
   else{if(temaFCAutoTimer){clearTimeout(temaFCAutoTimer);temaFCAutoTimer=null;} stopAllSpeech();}
 }
 function updateTemaFCAutoBtn(){
@@ -2302,13 +2321,9 @@ function speakTemaText(text, onDone){
   fetch(WORKER_URL+"/tts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:text})})
     .then(function(r){ if(!r.ok) throw new Error("tts "+r.status); return r.arrayBuffer();})
     .then(function(buf){
-      if(!buf || buf.byteLength < 256) throw new Error("empty audio");
-      var url=URL.createObjectURL(new Blob([buf],{type:"audio/mpeg"}));
-      var audio=new Audio(url);
-      currentAudio = audio;
-      audio.onended=function(){URL.revokeObjectURL(url);if(onDone)onDone();};
-      audio.onerror=function(){URL.revokeObjectURL(url);browserSpeak(text,onDone);};
-      audio.play().catch(function(){URL.revokeObjectURL(url);browserSpeak(text,onDone);});
+      playTTS(buf,
+        function(){ if(onDone)onDone(); },
+        function(){ browserSpeak(text,onDone); });
     }).catch(function(){browserSpeak(text,onDone);});
 }
 
